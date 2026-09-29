@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SwiftLoan Mobile Platform</title>
+    <title>SwiftLoan - Responsive Platform</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -39,19 +39,10 @@
                     },
                     animation: {
                         'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'slide-down': 'slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
                         'fade-in': 'fadeIn 0.3s ease-out forwards',
                         'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     },
                     keyframes: {
-                        slideUp: {
-                            '0%': { transform: 'translateY(100%)' },
-                            '100%': { transform: 'translateY(0)' },
-                        },
-                        slideDown: {
-                            '0%': { transform: 'translateY(0)' },
-                            '100%': { transform: 'translateY(100%)' },
-                        },
                         fadeIn: {
                             '0%': { opacity: '0' },
                             '100%': { opacity: '1' },
@@ -66,32 +57,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         
         body {
-            background-color: #e2e8f0; /* Darker background for desktop to make the phone pop */
+            background-color: #f8fafc;
             -webkit-tap-highlight-color: transparent;
-            overscroll-behavior-y: none; /* Prevent pull-to-refresh on mobile */
+            overscroll-behavior-y: none;
         }
 
-        /* Device Frame for Desktop */
-        @media (min-width: 640px) {
-            .device-frame {
-                border: 12px solid #0f172a;
-                border-radius: 40px !important;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                height: 850px !important;
-                max-height: 95vh;
-            }
-            .notch {
-                display: block !important;
-            }
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         .view-section {
             display: none;
@@ -117,10 +89,7 @@
         /* AI Scanning Line Animation */
         .scan-line {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
+            top: 0; left: 0; width: 100%; height: 2px;
             background: #2dd4bf;
             box-shadow: 0 0 10px #2dd4bf;
             animation: scan 2s linear infinite;
@@ -136,351 +105,360 @@
         .nav-btn.active .nav-icon { color: #0d9488; }
         .nav-btn.active .nav-icon i { font-weight: bold; font-family: "Phosphor-Fill"; }
         .nav-btn.active span { color: #0f172a; font-weight: 800; }
+        
+        .sidebar-btn.active { background-color: #f0fdfa; color: #0d9488; border-right: 3px solid #0d9488; }
+        .sidebar-btn.active i { font-weight: bold; font-family: "Phosphor-Fill"; }
+
+        /* Detail Modal Transitions */
+        .modal-base {
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+        }
+        .modal-closed-mobile { transform: translateY(100%); }
+        .modal-open-mobile { transform: translateY(0); }
+        
+        @media (min-width: 768px) {
+            .modal-closed-desktop { opacity: 0; pointer-events: none; transform: translate(-50%, -45%) scale(0.95); }
+            .modal-open-desktop { opacity: 1; pointer-events: auto; transform: translate(-50%, -50%) scale(1); }
+        }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex justify-center items-center text-slate-800">
 
-    <div class="device-frame w-full max-w-[400px] h-full bg-slate-50 flex flex-col relative overflow-hidden sm:rounded-[40px]">
+<body class="h-screen w-screen overflow-hidden flex text-slate-800">
+
+    <!-- Desktop Sidebar -->
+    <aside class="hidden md:flex w-72 flex-col bg-white border-r border-slate-200 z-30 shadow-sm shrink-0">
+        <div class="px-8 pt-8 pb-6 border-b border-slate-100 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center text-white shadow-brand-500/30 shadow-lg">
+                <i class="ph-bold ph-lightning text-xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-xl leading-tight text-slate-900 tracking-tight">SwiftLoan</h1>
+                <p class="text-[10px] uppercase font-bold text-brand-600 tracking-widest">Officer Portal</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <button onclick="switchView('dashboard')" class="sidebar-btn active w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors text-sm font-semibold" data-target="dashboard">
+                <i class="ph ph-squares-four text-xl"></i> Dashboard
+            </button>
+            <button onclick="switchView('applications')" class="sidebar-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors text-sm font-semibold" data-target="applications">
+                <i class="ph ph-folder-notch text-xl"></i> Queue Database
+            </button>
+            <button onclick="switchView('analytics')" class="sidebar-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors text-sm font-semibold" data-target="analytics">
+                <i class="ph ph-chart-line-up text-xl"></i> Portfolio Insights
+            </button>
+            
+            <div class="pt-4 pb-2 px-4">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tools</p>
+            </div>
+            
+            <button onclick="switchView('apply')" class="sidebar-btn w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-slate-500 hover:bg-slate-50 transition-colors text-sm font-semibold" data-target="apply">
+                <i class="ph ph-magic-wand text-xl"></i> Run Simulation
+            </button>
+        </nav>
+
+        <div class="p-6 border-t border-slate-100">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                    <i class="ph-bold ph-user"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-bold text-slate-900 truncate">Jane Doe</p>
+                    <p class="text-xs text-slate-500 truncate">Senior Underwriter</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50/50">
         
-        <!-- Fake Notch for Desktop Preview -->
-        <div class="notch hidden absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-3xl z-50"></div>
-
-        <!-- Top App Bar -->
-        <header class="bg-white/80 backdrop-blur-md px-6 pt-12 pb-4 flex justify-between items-center z-20 shrink-0 sticky top-0 border-b border-slate-100 safe-pt shadow-sm transition-all">
+        <!-- Mobile Header (Hidden on Desktop) -->
+        <header class="md:hidden bg-white/80 backdrop-blur-md px-6 pt-12 pb-4 flex justify-between items-center z-20 shrink-0 sticky top-0 border-b border-slate-100 safe-pt shadow-sm transition-all">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-2xl bg-brand-500 flex items-center justify-center text-white shadow-brand-500/30 shadow-lg">
                     <i class="ph-bold ph-lightning text-xl"></i>
                 </div>
                 <div>
                     <h1 class="font-bold text-xl leading-tight text-slate-900 tracking-tight">SwiftLoan</h1>
-                    <p class="text-[10px] uppercase font-bold text-brand-600 tracking-widest">Officer Portal</p>
                 </div>
             </div>
-            <button onclick="switchView('notifications')" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-colors relative active:scale-90">
+            <button onclick="switchView('notifications')" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-90 relative">
                 <i class="ph ph-bell text-xl"></i>
-                <span id="notif-badge" class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                <span id="notif-badge-mobile" class="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white hidden"></span>
             </button>
         </header>
 
-        <main class="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar relative pb-28 bg-slate-50/50" id="main-scroll">
+        <!-- Desktop Header Area (Search & Notifs) -->
+        <header class="hidden md:flex justify-between items-center px-8 py-6 bg-transparent z-10">
+            <div class="relative w-96 group">
+                <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-brand-500 transition-colors"></i>
+                <input type="text" placeholder="Global search..." class="w-full pl-12 pr-4 py-3 rounded-2xl bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm shadow-sm transition-all font-medium placeholder-slate-400">
+            </div>
+            <button onclick="switchView('notifications')" class="nav-btn w-11 h-11 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors relative shadow-sm" data-target="notifications">
+                <div class="nav-icon"><i class="ph ph-bell text-xl"></i></div>
+                <span id="notif-badge-desktop" class="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white hidden"></span>
+            </button>
+        </header>
+
+        <main class="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar relative pb-24 md:pb-8" id="main-scroll">
+            <div class="max-w-7xl mx-auto w-full">
             
-            <!-- Dashboard View -->
-            <section id="view-dashboard" class="view-section active p-6 space-y-8">
-                
-                <div class="animate-fade-in">
-                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hello, Jane <span class="inline-block animate-bounce origin-bottom">👋</span></h2>
-                    <p class="text-slate-500 text-sm mt-1 font-medium">Your portfolio is looking great today.</p>
-                </div>
-
-                <div class="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-6 px-6 snap-x">
-                    <div class="snap-start min-w-[150px] bg-dark rounded-[24px] p-5 text-white shadow-float flex-shrink-0 relative overflow-hidden group">
-                        <div class="absolute -right-2 -top-2 opacity-20 text-7xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-file-text"></i></div>
-                        <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-3 text-brand-400 backdrop-blur-sm">
-                            <i class="ph-bold ph-bell-ringing"></i>
+                <!-- Dashboard View -->
+                <section id="view-dashboard" class="view-section active p-6 md:px-8 space-y-8">
+                    <div class="animate-fade-in flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Hello, Jane <span class="inline-block animate-bounce origin-bottom">👋</span></h2>
+                            <p class="text-slate-500 text-sm mt-1 font-medium">Your portfolio is looking great today.</p>
                         </div>
-                        <p class="text-slate-300 text-xs font-semibold mb-1">Pending Action</p>
-                        <h3 class="text-4xl font-extrabold" id="dash-pending">0</h3>
+                        <div class="hidden md:flex gap-2">
+                            <button class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 shadow-sm hover:bg-slate-50"><i class="ph-bold ph-export mr-1"></i> Export</button>
+                            <button class="px-4 py-2 bg-dark text-white border border-dark rounded-xl text-sm font-bold shadow-sm hover:bg-slate-800"><i class="ph-bold ph-plus mr-1"></i> New Report</button>
+                        </div>
+                    </div>
+
+                    <!-- Responsive Stats Cards -->
+                    <div class="flex overflow-x-auto md:grid md:grid-cols-4 gap-4 pb-4 md:pb-0 no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 snap-x md:snap-none">
+                        <div class="snap-start min-w-[150px] md:min-w-0 bg-dark rounded-[24px] p-5 md:p-6 text-white shadow-float flex-shrink-0 relative overflow-hidden group">
+                            <div class="absolute -right-2 -top-2 opacity-20 text-7xl group-hover:scale-110 transition-transform"><i class="ph-fill ph-file-text"></i></div>
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white/10 flex items-center justify-center mb-3 text-brand-400 backdrop-blur-sm">
+                                <i class="ph-bold ph-bell-ringing text-lg"></i>
+                            </div>
+                            <p class="text-slate-300 text-xs md:text-sm font-semibold mb-1">Pending Action</p>
+                            <h3 class="text-4xl md:text-5xl font-extrabold" id="dash-pending">0</h3>
+                        </div>
+                        
+                        <div class="snap-start min-w-[150px] md:min-w-0 bg-white border border-slate-200 rounded-[24px] p-5 md:p-6 flex-shrink-0 shadow-soft">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-brand-50 flex items-center justify-center mb-3 text-brand-500">
+                                <i class="ph-bold ph-check-circle text-lg"></i>
+                            </div>
+                            <p class="text-slate-500 text-xs md:text-sm font-semibold mb-1">Auto-Approved</p>
+                            <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900" id="dash-approved">0</h3>
+                        </div>
+                        
+                        <div class="snap-start min-w-[150px] md:min-w-0 bg-white border border-slate-200 rounded-[24px] p-5 md:p-6 flex-shrink-0 shadow-soft">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-50 flex items-center justify-center mb-3 text-blue-500">
+                                <i class="ph-bold ph-chart-line-up text-lg"></i>
+                            </div>
+                            <p class="text-slate-500 text-xs md:text-sm font-semibold mb-1">Total Volume</p>
+                            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 md:mt-2" id="dash-volume">$0</h3>
+                        </div>
+
+                        <div class="snap-start min-w-[150px] md:min-w-0 bg-white border border-slate-200 rounded-[24px] p-5 md:p-6 flex-shrink-0 shadow-soft">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-red-50 flex items-center justify-center mb-3 text-red-500">
+                                <i class="ph-bold ph-x-circle text-lg"></i>
+                            </div>
+                            <p class="text-slate-500 text-xs md:text-sm font-semibold mb-1">Declined</p>
+                            <h3 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-1 md:mt-2" id="dash-declined">0</h3>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="md:col-span-2">
+                            <div class="flex justify-between items-end mb-4">
+                                <h3 class="text-lg font-bold text-slate-900">Priority Queue</h3>
+                                <button onclick="switchView('applications')" class="text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors">View Database</button>
+                            </div>
+                            <div class="space-y-3" id="dash-queue-list">
+                                <!-- Injected via JS -->
+                            </div>
+                        </div>
+                        
+                        <!-- Desktop only quick activity widget -->
+                        <div class="hidden md:block">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4">Recent System Activity</h3>
+                            <div class="bg-white rounded-[24px] p-5 border border-slate-200 shadow-soft space-y-4" id="dash-activity-widget">
+                                <p class="text-sm text-slate-500 italic text-center py-4">No recent activity.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="view-applications" class="view-section p-6 md:px-8">
+                    <div class="md:hidden sticky top-[72px] bg-slate-50/95 backdrop-blur-sm z-10 pb-4 pt-2 mb-2 -mx-6 px-6">
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">Database</h2>
+                        <div class="relative group">
+                            <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg"></i>
+                            <input type="text" placeholder="Search applicant names..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-sm shadow-sm font-medium">
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex justify-between items-end mb-6">
+                        <div>
+                            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Application Database</h2>
+                            <p class="text-slate-500 text-sm mt-1 font-medium">Manage and review all incoming requests.</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="px-5 py-2.5 rounded-full bg-dark text-white border border-dark text-sm font-bold shadow-sm">All Apps</button>
+                            <button class="px-5 py-2.5 rounded-full bg-white text-slate-600 border border-slate-200 text-sm font-bold shadow-sm hover:bg-slate-50 transition-all">Pending Action</button>
+                            <button class="px-5 py-2.5 rounded-full bg-white text-slate-600 border border-slate-200 text-sm font-bold shadow-sm hover:bg-slate-50 transition-all">Archived</button>
+                        </div>
                     </div>
                     
-                    <div class="snap-start min-w-[150px] bg-white border border-slate-200 rounded-[24px] p-5 flex-shrink-0 shadow-soft">
-                        <div class="w-8 h-8 rounded-full bg-brand-50 flex items-center justify-center mb-3 text-brand-500">
-                            <i class="ph-bold ph-check-circle"></i>
-                        </div>
-                        <p class="text-slate-500 text-xs font-semibold mb-1">Auto-Approved</p>
-                        <h3 class="text-3xl font-extrabold text-slate-900" id="dash-approved">0</h3>
-                    </div>
-                    
-                    <div class="snap-start min-w-[150px] bg-white border border-slate-200 rounded-[24px] p-5 flex-shrink-0 shadow-soft">
-                        <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-3 text-blue-500">
-                            <i class="ph-bold ph-chart-line-up"></i>
-                        </div>
-                        <p class="text-slate-500 text-xs font-semibold mb-1">Total Volume</p>
-                        <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="dash-volume">$0</h3>
+                    <div class="md:hidden flex gap-2 mt-0 mb-4 overflow-x-auto no-scrollbar pb-1">
+                        <button class="px-5 py-2 rounded-full bg-dark text-white border border-dark text-xs font-bold whitespace-nowrap shadow-sm">All</button>
+                        <button class="px-5 py-2 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-bold whitespace-nowrap shadow-sm">Pending</button>
+                        <button class="px-5 py-2 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-bold whitespace-nowrap shadow-sm">Reviewed</button>
                     </div>
 
-                    <div class="snap-start min-w-[150px] bg-white border border-slate-200 rounded-[24px] p-5 flex-shrink-0 shadow-soft">
-                        <div class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center mb-3 text-red-500">
-                            <i class="ph-bold ph-x-circle"></i>
-                        </div>
-                        <p class="text-slate-500 text-xs font-semibold mb-1">Declined</p>
-                        <h3 class="text-2xl font-extrabold text-slate-900 mt-1" id="dash-declined">0</h3>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-end mb-4">
-                        <h3 class="text-lg font-bold text-slate-900">Priority Queue</h3>
-                        <button onclick="switchView('applications')" class="text-sm font-bold text-brand-600 active:opacity-70">View All</button>
-                    </div>
-                    <div class="space-y-3" id="dash-queue-list">
+                    <!-- Grid on Desktop, List on Mobile -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4" id="full-app-list">
                         <!-- Injected via JS -->
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section id="view-applications" class="view-section p-6">
-                <div class="sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 pb-4 pt-2 mb-2 -mx-6 px-6">
-                    <h2 class="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">Database</h2>
-                    
-                    <div class="relative group">
-                        <i class="ph-bold ph-magnifying-glass absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 text-lg group-focus-within:text-brand-500 transition-colors"></i>
-                        <input type="text" placeholder="Search applicant names..." class="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-sm shadow-sm transition-all font-medium placeholder-slate-400">
-                    </div>
-                    
-                    <div class="flex gap-2 mt-4 overflow-x-auto no-scrollbar pb-1">
-                        <button class="px-5 py-2 rounded-full bg-dark text-white border border-dark text-xs font-bold whitespace-nowrap shadow-sm">All Apps</button>
-                        <button class="px-5 py-2 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-bold whitespace-nowrap shadow-sm hover:bg-slate-50 active:scale-95 transition-all">Pending</button>
-                        <button class="px-5 py-2 rounded-full bg-white text-slate-600 border border-slate-200 text-xs font-bold whitespace-nowrap shadow-sm hover:bg-slate-50 active:scale-95 transition-all">Reviewed</button>
-                    </div>
-                </div>
-
-                <div class="space-y-4 pb-4" id="full-app-list">
-                    <!-- Injected via JS -->
-                </div>
-            </section>
-
-            <section id="view-analytics" class="view-section p-6">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Insights</h2>
-                        <p class="text-slate-500 text-sm mt-1 font-medium">Real-time portfolio metrics</p>
-                    </div>
-                    <button onclick="renderAnalytics()" class="w-10 h-10 rounded-full bg-white shadow-soft border border-slate-100 flex items-center justify-center text-brand-600 active:rotate-180 transition-transform duration-500">
-                        <i class="ph-bold ph-arrows-clockwise text-lg"></i>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-8">
-                    <div class="bg-white p-5 rounded-[24px] shadow-soft border border-slate-100">
-                        <div class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center mb-3">
-                            <i class="ph-bold ph-chart-pie-slice text-xl text-brand-500"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Approval Rate</p>
-                        <h3 class="text-3xl font-extrabold text-slate-900" id="metric-approval-rate">0%</h3>
-                    </div>
-                    <div class="bg-white p-5 rounded-[24px] shadow-soft border border-slate-100">
-                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-3">
-                            <i class="ph-bold ph-warning-circle text-xl text-red-500"></i>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">High Risk</p>
-                        <h3 class="text-3xl font-extrabold text-slate-900" id="metric-high-risk">0</h3>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="bg-white p-6 rounded-[24px] shadow-soft border border-slate-100">
-                        <h3 class="text-sm font-bold text-slate-900 mb-6">Pipeline Status</h3>
-                        <div class="relative h-48 w-full flex justify-center">
-                            <canvas id="chartStatusMobile"></canvas>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-6 rounded-[24px] shadow-soft border border-slate-100">
-                        <h3 class="text-sm font-bold text-slate-900 mb-6">Capital Allocation</h3>
-                        <div class="relative h-48 w-full">
-                            <canvas id="chartPurposeMobile"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="view-apply" class="view-section p-6">
-                <div class="mb-8">
-                    <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Simulation</h2>
-                    <p class="text-slate-500 text-sm mt-1 font-medium">Inject a test application into the queue</p>
-                </div>
-
-                <form id="loan-form" onsubmit="submitApplication(event)" class="bg-white p-6 rounded-[32px] shadow-soft border border-slate-100 space-y-5">
-                    
-                    <div class="grid grid-cols-2 gap-4">
+                <section id="view-analytics" class="view-section p-6 md:px-8">
+                    <div class="flex justify-between items-end mb-8">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">First Name</label>
-                            <input type="text" id="form-fname" required class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all">
+                            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Insights</h2>
+                            <p class="text-slate-500 text-sm mt-1 font-medium">Real-time portfolio metrics</p>
                         </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Last Name</label>
-                            <input type="text" id="form-lname" required class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all">
+                        <button onclick="renderAnalytics()" class="w-10 h-10 rounded-full bg-white shadow-soft border border-slate-200 flex items-center justify-center text-brand-600 hover:bg-brand-50 transition-colors">
+                            <i class="ph-bold ph-arrows-clockwise text-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white p-5 rounded-[24px] shadow-soft border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-brand-50 flex items-center justify-center mb-3">
+                                <i class="ph-bold ph-chart-pie-slice text-xl text-brand-500"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Approval Rate</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900" id="metric-approval-rate">0%</h3>
+                        </div>
+                        <div class="bg-white p-5 rounded-[24px] shadow-soft border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mb-3">
+                                <i class="ph-bold ph-warning-circle text-xl text-red-500"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">High Risk</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900" id="metric-high-risk">0</h3>
+                        </div>
+                        <div class="hidden md:block bg-white p-5 rounded-[24px] shadow-soft border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-3">
+                                <i class="ph-bold ph-clock text-xl text-blue-500"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Avg Processing Time</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900">1.2<span class="text-lg text-slate-500">h</span></h3>
+                        </div>
+                         <div class="hidden md:block bg-white p-5 rounded-[24px] shadow-soft border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mb-3">
+                                <i class="ph-bold ph-trend-up text-xl text-amber-500"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">Weekly Growth</p>
+                            <h3 class="text-3xl font-extrabold text-slate-900">+14%</h3>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Annual Income ($)</label>
-                        <input type="number" id="form-income" required min="10000" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all" placeholder="e.g. 75000">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Requested Amount ($)</label>
-                        <input type="number" id="form-amount" required min="1000" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all" placeholder="e.g. 15000">
-                    </div>
-
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Loan Purpose</label>
-                        <div class="relative">
-                            <select id="form-purpose" required class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold appearance-none cursor-pointer">
-                                <option value="Personal">Personal</option>
-                                <option value="Home Improvement">Home Improvement</option>
-                                <option value="Auto">Auto</option>
-                                <option value="Business">Business</option>
-                                <option value="Debt Consolidation">Debt Consolidation</option>
-                            </select>
-                            <i class="ph-bold ph-caret-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-[24px] shadow-soft border border-slate-200">
+                            <h3 class="text-sm font-bold text-slate-900 mb-6">Pipeline Status</h3>
+                            <div class="relative h-48 md:h-64 w-full flex justify-center">
+                                <canvas id="chartStatus"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-6 rounded-[24px] shadow-soft border border-slate-200">
+                            <h3 class="text-sm font-bold text-slate-900 mb-6">Capital Allocation</h3>
+                            <div class="relative h-48 md:h-64 w-full">
+                                <canvas id="chartPurpose"></canvas>
+                            </div>
                         </div>
                     </div>
+                </section>
 
-                    <button type="submit" class="w-full mt-4 py-4 bg-dark text-white rounded-2xl font-bold text-sm shadow-float active:scale-[0.98] transition-transform flex justify-center items-center gap-2 group">
-                        <i class="ph-bold ph-magic-wand group-hover:rotate-12 transition-transform"></i> Inject Data
-                    </button>
-                </form>
-            </section>
+                <section id="view-apply" class="view-section p-6 md:px-8">
+                    <div class="max-w-2xl mx-auto">
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Run Simulation</h2>
+                            <p class="text-slate-500 text-sm mt-1 font-medium">Inject a test application into the queue to test SwiftAI parameters.</p>
+                        </div>
 
-            <section id="view-notifications" class="view-section p-6 min-h-full flex flex-col">
-                <div class="flex justify-between items-end mb-6 sticky top-0 bg-slate-50/95 backdrop-blur-sm z-10 pb-4 pt-2 -mx-6 px-6">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Activity</h2>
-                        <p class="text-slate-500 text-sm mt-1 font-medium">System alerts and tasks</p>
+                        <form id="loan-form" onsubmit="submitApplication(event)" class="bg-white p-6 md:p-8 rounded-[32px] shadow-soft border border-slate-200 space-y-6">
+                            
+                            <div class="grid grid-cols-2 gap-4 md:gap-6">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">First Name</label>
+                                    <input type="text" id="form-fname" required class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Last Name</label>
+                                    <input type="text" id="form-lname" required class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Annual Income ($)</label>
+                                    <input type="number" id="form-income" required min="10000" class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all" placeholder="e.g. 75000">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Requested Amount ($)</label>
+                                    <input type="number" id="form-amount" required min="1000" class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold transition-all" placeholder="e.g. 15000">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 ml-1">Loan Purpose</label>
+                                <div class="relative">
+                                    <select id="form-purpose" required class="w-full p-3.5 md:p-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm font-semibold appearance-none cursor-pointer">
+                                        <option value="Personal">Personal</option>
+                                        <option value="Home Improvement">Home Improvement</option>
+                                        <option value="Auto">Auto</option>
+                                        <option value="Business">Business</option>
+                                        <option value="Debt Consolidation">Debt Consolidation</option>
+                                    </select>
+                                    <i class="ph-bold ph-caret-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div class="pt-2">
+                                <button type="submit" class="w-full py-4 bg-dark text-white rounded-2xl font-bold text-sm shadow-float hover:bg-slate-800 transition-colors flex justify-center items-center gap-2 group">
+                                    <i class="ph-bold ph-magic-wand group-hover:rotate-12 transition-transform"></i> Inject Test Data
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                    <button onclick="clearAllNotifications()" class="text-xs font-bold text-brand-600 active:opacity-70 px-3 py-1.5 rounded-full bg-brand-50">
-                        Clear All
-                    </button>
-                </div>
+                </section>
 
-                <div id="notifications-list" class="space-y-3 flex-1 pb-4">
-                    <!-- Notifications Injected via JS -->
-                </div>
-                
-                <div id="notifications-empty" class="hidden flex-1 flex flex-col items-center justify-center text-center opacity-0 transition-opacity duration-300">
-                    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-slate-300">
-                        <i class="ph-fill ph-bell-z text-4xl"></i>
+                <section id="view-notifications" class="view-section p-6 md:px-8 min-h-[50vh] flex flex-col">
+                    <div class="max-w-3xl mx-auto w-full">
+                        <div class="flex justify-between items-end mb-6 sticky md:static top-[72px] bg-slate-50/95 md:bg-transparent backdrop-blur-sm z-10 pb-4 pt-2 -mx-6 px-6 md:mx-0 md:px-0">
+                            <div>
+                                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Activity</h2>
+                                <p class="text-slate-500 text-sm mt-1 font-medium">Alerts, tasks, and system logs</p>
+                            </div>
+                            <button onclick="clearAllNotifications()" class="text-xs font-bold text-brand-600 hover:text-brand-700 hover:bg-brand-50 px-4 py-2 rounded-full transition-colors">
+                                Clear All
+                            </button>
+                        </div>
+
+                        <div id="notifications-list" class="space-y-3 flex-1 pb-4">
+                            <!-- Notifications Injected via JS -->
+                        </div>
+                        
+                        <div id="notifications-empty" class="hidden flex-1 flex-col items-center justify-center text-center opacity-0 py-12">
+                            <div class="w-20 h-20 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center mb-4 text-slate-300">
+                                <i class="ph-fill ph-bell-z text-4xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-lg mb-1">You're all caught up!</h3>
+                            <p class="text-sm text-slate-500">No new notifications right now.</p>
+                        </div>
                     </div>
-                    <h3 class="font-bold text-slate-900 text-lg mb-1">You're all caught up!</h3>
-                    <p class="text-sm text-slate-500">No new notifications right now.</p>
-                </div>
-            </section>
+                </section>
 
+            </div>
         </main>
 
-        <!-- Detail Backdrop Overlay -->
-        <div id="detail-backdrop" class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeAppDetails()"></div>
-
-        <!-- Full Screen Detail Modal -->
-        <div id="detail-overlay" class="absolute bottom-0 left-0 w-full h-[90%] bg-slate-50 z-40 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] transform translate-y-full transition-transform duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] flex flex-col">
-            
-            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0"></div>
-
-            <header class="bg-transparent px-6 py-2 flex items-center gap-4 shrink-0">
-                <div class="flex-1">
-                    <h2 class="text-2xl font-extrabold text-slate-900 leading-tight tracking-tight" id="det-name">Name</h2>
-                    <p class="text-xs font-semibold text-slate-400 mt-1" id="det-id">ID</p>
-                </div>
-                <button onclick="closeAppDetails()" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:bg-slate-200 transition-colors">
-                    <i class="ph-bold ph-x text-lg"></i>
-                </button>
-            </header>
-
-            <div class="flex-1 overflow-y-auto p-6 pb-32 space-y-6 no-scrollbar">
-                
-                <div class="bg-white p-6 rounded-[32px] shadow-soft border border-slate-100 text-center relative overflow-hidden">
-                    <div id="det-status-badge" class="absolute top-4 right-4 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Status</div>
-                    
-                    <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider mt-4">Requested Capital</p>
-                    <h3 class="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight" id="det-amount">$0</h3>
-                    
-                    <div class="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
-                        <div class="text-left">
-                            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Purpose</p>
-                            <p class="text-sm font-bold text-slate-800" id="det-purpose">--</p>
-                        </div>
-                        <div class="w-px h-8 bg-slate-200"></div>
-                        <div class="text-right">
-                            <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Verif. Income</p>
-                            <p class="text-sm font-bold text-slate-800" id="det-income">$0</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Upgraded AI Sentinel -->
-                <div class="bg-dark rounded-[32px] p-6 relative overflow-hidden shadow-float">
-                    <div class="absolute inset-0 bg-gradient-to-br from-brand-500/10 to-transparent pointer-events-none"></div>
-                    <div class="scan-line hidden" id="scan-line"></div>
-                    
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center shadow-glow">
-                                    <i class="ph-bold ph-brain text-xl"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-extrabold text-white text-base">SwiftAI Core</h4>
-                                    <p class="text-[10px] text-brand-400 font-bold uppercase tracking-wider" id="ai-status-text">Ready for Analysis</p>
-                                </div>
-                            </div>
-                            <div id="ai-spinner" class="hidden">
-                                <i class="ph-bold ph-spinner-gap animate-spin text-brand-400 text-2xl"></i>
-                            </div>
-                        </div>
-
-                        <!-- Progress Steps (Dynamic) -->
-                        <div id="ai-progress-container" class="space-y-3 mb-6 hidden">
-                            <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-1">
-                                <i class="ph-fill ph-check-circle step-icon"></i> <span>Connecting to credit bureaus...</span>
-                            </div>
-                            <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-2">
-                                <i class="ph-fill ph-check-circle step-icon"></i> <span>Calculating Debt-to-Income (DTI)...</span>
-                            </div>
-                            <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-3">
-                                <i class="ph-fill ph-check-circle step-icon"></i> <span>Simulating default probabilities...</span>
-                            </div>
-                        </div>
-
-                        <!-- Results Grid (Hidden initially) -->
-                        <div id="ai-results-grid" class="grid grid-cols-2 gap-3 mb-5 transition-opacity duration-300 opacity-0 hidden">
-                            <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                                <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">FICO Score</p>
-                                <p class="text-2xl font-extrabold text-white" id="det-score">--</p>
-                            </div>
-                            <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
-                                <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Est. DTI</p>
-                                <p class="text-2xl font-extrabold text-white" id="ai-dti-mobile">--%</p>
-                            </div>
-                            <div class="col-span-2 bg-slate-800/80 p-4 rounded-2xl border border-slate-700 flex justify-between items-center">
-                                <div>
-                                    <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Model Default Risk</p>
-                                    <p class="text-2xl font-extrabold text-white" id="ai-prob-mobile">--%</p>
-                                </div>
-                                <div id="det-risk-badge" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">-- Risk</div>
-                            </div>
-                        </div>
-
-                        <!-- Narrative -->
-                        <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
-                            <p class="text-sm text-slate-300 leading-relaxed font-medium" id="det-ai-insight-mobile">
-                                Awaiting analysis trigger.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fixed Bottom Action Bar -->
-            <div id="action-footer" class="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-100 p-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] safe-pb z-50">
-                <div id="mobile-actions" class="flex gap-4">
-                    <!-- Injected via JS -->
-                </div>
-            </div>
-        </div>
-
-        <nav class="glass-nav border-t border-slate-200/60 flex justify-around items-center px-2 py-4 absolute bottom-0 w-full z-20">
+        <!-- Mobile Bottom Nav (Hidden on Desktop) -->
+        <nav class="md:hidden glass-nav border-t border-slate-200/60 flex justify-around items-center px-2 py-4 absolute bottom-0 w-full z-20">
             <button onclick="switchView('dashboard')" class="nav-btn active flex flex-col items-center gap-1 w-16 group" data-target="dashboard">
-                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90">
-                    <i class="ph ph-squares-four"></i>
-                </div>
+                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90"><i class="ph ph-squares-four"></i></div>
                 <span class="text-[10px] font-semibold text-slate-500 transition-colors">Home</span>
             </button>
             
             <button onclick="switchView('applications')" class="nav-btn flex flex-col items-center gap-1 w-16 group" data-target="applications">
-                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90">
-                    <i class="ph ph-folder-notch"></i>
-                </div>
+                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90"><i class="ph ph-folder-notch"></i></div>
                 <span class="text-[10px] font-semibold text-slate-500 transition-colors">Queue</span>
             </button>
 
@@ -491,26 +469,135 @@
             </div>
 
             <button onclick="switchView('analytics')" class="nav-btn flex flex-col items-center gap-1 w-16 group" data-target="analytics">
-                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90">
-                    <i class="ph ph-chart-line-up"></i>
-                </div>
+                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90"><i class="ph ph-chart-line-up"></i></div>
                 <span class="text-[10px] font-semibold text-slate-500 transition-colors">Insights</span>
             </button>
             
             <button class="nav-btn flex flex-col items-center gap-1 w-16 group">
-                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90">
-                    <i class="ph ph-user"></i>
-                </div>
+                <div class="nav-icon text-slate-400 transition-all duration-300 text-[26px] group-active:scale-90"><i class="ph ph-user"></i></div>
                 <span class="text-[10px] font-semibold text-slate-500 transition-colors">Profile</span>
             </button>
         </nav>
 
-        <div id="toast" class="absolute top-16 left-1/2 transform -translate-x-1/2 -translate-y-[150%] opacity-0 transition-all duration-400 cubic-bezier(0.16,1,0.3,1) z-[60] w-11/12 max-w-[360px] pointer-events-none">
-            <div id="toast-body" class="bg-dark/95 backdrop-blur-md p-4 rounded-2xl shadow-float border border-slate-700 flex items-center gap-4">
-                <div id="toast-icon" class="w-10 h-10 rounded-xl bg-brand-500/20 flex items-center justify-center shrink-0 text-brand-400">
-                    <i class="ph-fill ph-check-circle text-2xl"></i>
+        <!-- Overlay Backdrop -->
+        <div id="detail-backdrop" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-30 opacity-0 pointer-events-none transition-opacity duration-300" onclick="closeAppDetails()"></div>
+
+        <!-- Detail Modal (Bottom Sheet on Mobile, Centered Modal on Desktop) -->
+        <div id="detail-overlay" class="fixed inset-x-0 bottom-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-40 bg-slate-50 md:rounded-[32px] rounded-t-[40px] shadow-2xl w-full md:max-w-3xl flex flex-col h-[90vh] md:h-auto md:max-h-[85vh] modal-base modal-closed-mobile md:modal-closed-desktop">
+            
+            <div class="md:hidden w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2 shrink-0"></div>
+
+            <header class="bg-transparent px-6 md:px-8 py-4 md:py-6 flex items-center gap-4 shrink-0 border-b border-slate-100">
+                <div class="flex-1">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight" id="det-name">Name</h2>
+                    <p class="text-xs md:text-sm font-semibold text-slate-500 mt-1" id="det-id">ID</p>
                 </div>
-                <p id="toast-msg" class="text-sm font-bold text-white tracking-wide">Message</p>
+                <button onclick="closeAppDetails()" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 transition-colors relative z-20 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
+                </button>
+            </header>
+
+            <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 no-scrollbar pb-32 md:pb-8">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Data Column -->
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-[24px] shadow-soft border border-slate-200 text-center relative overflow-hidden">
+                            <div id="det-status-badge" class="absolute top-4 right-4 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider">Status</div>
+                            
+                            <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider mt-2">Requested Capital</p>
+                            <h3 class="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight" id="det-amount">$0</h3>
+                            
+                            <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-100">
+                                <div class="text-left">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Purpose</p>
+                                    <p class="text-sm font-bold text-slate-800" id="det-purpose">--</p>
+                                </div>
+                                <div class="w-px h-8 bg-slate-200"></div>
+                                <div class="text-right">
+                                    <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Verif. Income</p>
+                                    <p class="text-sm font-bold text-slate-800" id="det-income">$0</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-50/50 p-5 rounded-[24px] border border-indigo-100/50 relative mt-4 md:mt-0">
+                            <div class="absolute -top-3 left-4 bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm border border-indigo-200">
+                                <i class="ph-fill ph-quotes"></i> Applicant Statement
+                            </div>
+                            <p class="text-sm text-slate-700 leading-relaxed font-medium italic mt-2" id="det-narrative">
+                                --
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- AI Sentinel Column -->
+                    <div class="bg-dark rounded-[32px] p-6 relative overflow-hidden shadow-float h-full flex flex-col">
+                        <div class="absolute inset-0 bg-gradient-to-br from-brand-500/10 to-transparent pointer-events-none"></div>
+                        <div class="scan-line hidden" id="scan-line"></div>
+                        
+                        <div class="relative z-10 flex-1 flex flex-col">
+                            <div class="flex items-center justify-between mb-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center shadow-glow">
+                                        <i class="ph-bold ph-brain text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-extrabold text-white text-base">SwiftAI Core</h4>
+                                        <p class="text-[10px] text-brand-400 font-bold uppercase tracking-wider" id="ai-status-text">Ready for Analysis</p>
+                                    </div>
+                                </div>
+                                <div id="ai-spinner" class="hidden">
+                                    <i class="ph-bold ph-spinner-gap animate-spin text-brand-400 text-2xl"></i>
+                                </div>
+                            </div>
+
+                            <div id="ai-progress-container" class="space-y-3 mb-6 hidden flex-1">
+                                <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-1">
+                                    <i class="ph-fill ph-check-circle step-icon"></i> <span>Connecting to credit bureaus...</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-2">
+                                    <i class="ph-fill ph-check-circle step-icon"></i> <span>Calculating Debt-to-Income (DTI)...</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs font-semibold text-slate-400 ai-step opacity-50" id="step-3">
+                                    <i class="ph-fill ph-check-circle step-icon"></i> <span>Simulating default probabilities...</span>
+                                </div>
+                            </div>
+
+                            <div id="ai-results-grid" class="flex-col gap-3 mb-5 transition-opacity duration-300 opacity-0 hidden flex-1 justify-end">
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">FICO Score</p>
+                                        <p class="text-2xl font-extrabold text-white" id="det-score">--</p>
+                                    </div>
+                                    <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700">
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Est. DTI</p>
+                                        <p class="text-2xl font-extrabold text-white" id="ai-dti-mobile">--%</p>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-800/80 p-4 rounded-2xl border border-slate-700 flex justify-between items-center mb-3">
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Model Default Risk</p>
+                                        <p class="text-2xl font-extrabold text-white" id="ai-prob-mobile">--%</p>
+                                    </div>
+                                    <div id="det-risk-badge" class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider">-- Risk</div>
+                                </div>
+                                <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
+                                    <p class="text-sm text-slate-300 leading-relaxed font-medium" id="det-ai-insight-mobile">
+                                        Awaiting analysis trigger.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Action Footer -->
+            <div id="action-footer" class="md:static absolute bottom-0 left-0 w-full bg-white/90 md:bg-white backdrop-blur-md border-t border-slate-200 p-6 md:rounded-b-[32px] md:shadow-none shadow-[0_-10px_30px_rgba(0,0,0,0.05)] safe-pb z-50 shrink-0">
+                <div id="modal-actions" class="flex gap-4">
+                    <!-- Injected via JS -->
+                </div>
             </div>
         </div>
 
@@ -526,26 +613,23 @@
         Chart.defaults.plugins.tooltip.titleFont = { size: 13, weight: 'bold' };
         Chart.defaults.plugins.tooltip.bodyFont = { size: 12, weight: '500' };
 
-        // Mock State Generation
         const today = new Date();
         const yest = new Date(today); yest.setDate(yest.getDate() - 1);
         const formatD = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         let loans = [
-            { id: 'L-8942', applicantName: 'Michael Chang', amount: 35000, purpose: 'Home Improvement', status: 'Pending', creditScore: 710, income: 95000, date: 'Today, 09:41 AM', riskLevel: 'Low', narrative: "My wife and I are expecting our first child in three months, and we urgently need to finish finishing our basement to create a proper nursery and extra bathroom. The contractor requires a deposit this week to guarantee the work will be done before the baby arrives. We both have stable jobs and excellent credit, we just don't have the liquid cash right now for such a large, immediate project." },
-            { id: 'L-8941', applicantName: 'Sarah Smith', amount: 8000, purpose: 'Debt Consolidation', status: 'Approved', creditScore: 780, income: 65000, date: 'Today, 08:15 AM', riskLevel: 'Low', narrative: "I am looking to consolidate three high-interest credit cards that I used to float expenses while I was between jobs last year. I am fully employed now as a dental hygienist, but the 24% APR on these cards is making it impossible to make a dent in the principal. This loan will let me pay them all off immediately and consolidate into one manageable monthly payment so I can finally be debt-free." },
-            { id: 'L-8940', applicantName: 'James Wilson', amount: 55000, purpose: 'Business', status: 'Review', creditScore: 660, income: 90000, date: 'Yesterday', riskLevel: 'Medium', narrative: "I need capital to purchase a new commercial oven and refrigeration unit for my bakery. Our current equipment is failing, and if we can't replace it before the busy holiday season, we will lose out on our most profitable quarter. I know my credit took a small hit during the pandemic, but our monthly revenue has tripled since then. Please, this loan is make-or-break for my small business." },
-            { id: 'L-8939', applicantName: 'Emily Davis', amount: 15000, purpose: 'Auto', status: 'Rejected', creditScore: 580, income: 45000, date: formatD(yest), riskLevel: 'High', narrative: "I am begging you to approve this. My car completely died yesterday, and I live 30 miles away from my job with no public transit options. If I don't get a reliable used car by Monday, I will lose my job, and I am the sole provider for my two kids. I know my credit score is terrible right now because of my ex-husband's debts, but I promise I will make every single payment on time. Please just give me a chance, my family is depending on this." },
-            { id: 'L-8938', applicantName: 'David Chen', amount: 120000, purpose: 'Business', status: 'Pending', creditScore: 695, income: 110000, date: formatD(yest), riskLevel: 'Medium', narrative: "Requesting working capital to bridge a 90-day gap between supplier payments and client receivables for my logistics firm. We just landed a massive contract with a Fortune 500 company, but the upfront costs for fulfilling the initial orders are straining our current cash flow. This is a short-term, low-risk injection that will allow us to execute the contract and double our annual revenue." },
-            { id: 'L-8937', applicantName: 'Jessica Taylor', amount: 12000, purpose: 'Personal', status: 'Approved', creditScore: 740, income: 55000, date: 'Sep 26', riskLevel: 'Low', narrative: "I am requesting funds to cover out-of-network medical expenses related to my father's sudden illness. He requires a specialized treatment that our insurance is refusing to fully cover. He has always been there for me, and I need to do this for him. I have a secure job and have always managed my finances responsibly." },
-            { id: 'L-8936', applicantName: 'Robert Fox', amount: 18000, purpose: 'Auto', status: 'Pending', creditScore: 685, income: 52000, date: 'Sep 25', riskLevel: 'Medium', narrative: "Need to purchase a specialized, wheelchair-accessible van. My son was recently in a severe accident and is coming home from the rehab center next week. Our current vehicle cannot accommodate his motorized chair, and we absolutely need this to take him to his ongoing physical therapy appointments. We have put down everything we have in savings, this is just for the remaining balance." }
+            { id: 'L-8942', applicantName: 'Michael Chang', amount: 35000, purpose: 'Home Improvement', status: 'Pending', creditScore: 710, income: 95000, date: 'Today, 09:41 AM', riskLevel: 'Low', narrative: "My wife and I are expecting our first child in three months, and we urgently need to finish finishing our basement to create a proper nursery and extra bathroom. The contractor requires a deposit this week to guarantee the work will be done before the baby arrives." },
+            { id: 'L-8941', applicantName: 'Sarah Smith', amount: 8000, purpose: 'Debt Consolidation', status: 'Approved', creditScore: 780, income: 65000, date: 'Today, 08:15 AM', riskLevel: 'Low', narrative: "I am looking to consolidate three high-interest credit cards that I used to float expenses while I was between jobs last year. This loan will let me pay them all off immediately and consolidate into one manageable monthly payment." },
+            { id: 'L-8940', applicantName: 'James Wilson', amount: 55000, purpose: 'Business', status: 'Review', creditScore: 660, income: 90000, date: 'Yesterday', riskLevel: 'Medium', narrative: "I need capital to purchase a new commercial oven and refrigeration unit for my bakery. Our current equipment is failing, and if we can't replace it before the busy holiday season, we will lose out on our most profitable quarter." },
+            { id: 'L-8939', applicantName: 'Emily Davis', amount: 15000, purpose: 'Auto', status: 'Rejected', creditScore: 580, income: 45000, date: formatD(yest), riskLevel: 'High', narrative: "I am begging you to approve this. My car completely died yesterday, and I live 30 miles away from my job with no public transit options. If I don't get a reliable used car by Monday, I will lose my job." },
+            { id: 'L-8938', applicantName: 'David Chen', amount: 120000, purpose: 'Business', status: 'Pending', creditScore: 695, income: 110000, date: formatD(yest), riskLevel: 'Medium', narrative: "Requesting working capital to bridge a 90-day gap between supplier payments and client receivables for my logistics firm. This is a short-term injection that will allow us to execute a new contract." },
+            { id: 'L-8937', applicantName: 'Jessica Taylor', amount: 12000, purpose: 'Personal', status: 'Approved', creditScore: 740, income: 55000, date: 'Sep 26', riskLevel: 'Low', narrative: "I am requesting funds to cover out-of-network medical expenses related to my father's sudden illness. He requires a specialized treatment that our insurance is refusing to fully cover." },
+            { id: 'L-8936', applicantName: 'Robert Fox', amount: 18000, purpose: 'Auto', status: 'Pending', creditScore: 685, income: 52000, date: 'Sep 25', riskLevel: 'Medium', narrative: "Need to purchase a specialized, wheelchair-accessible van. My son was recently in a severe accident and is coming home from the rehab center next week." },
+            { id: 'L-8935', applicantName: 'Amanda Lopez', amount: 4500, purpose: 'Personal', status: 'Review', creditScore: 620, income: 38000, date: 'Sep 24', riskLevel: 'High', narrative: "Emergency home repairs needed after a severe storm damaged my roof." }
         ];
 
         let activeChartInstances = {};
         let currentOpenLoanId = null;
-        let unreadNotificationsCount = 0;
-
-        // Notification System State
         let notificationsData = [
             { id: 'n1', title: 'System Update', message: 'SwiftAI model updated to v2.4. Risk parameters adjusted.', type: 'system', time: '1 hr ago', read: false },
             { id: 'n2', title: 'High Volume Alert', message: 'Queue size is 20% higher than average for a Tuesday.', type: 'alert', time: '2 hrs ago', read: false },
@@ -593,8 +677,14 @@
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.getElementById(`view-${viewName}`).classList.add('active');
 
-            // Update bottom nav UI
+            // Update bottom nav UI (Mobile)
             document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.dataset.target === viewName) btn.classList.add('active');
+            });
+            
+            // Update sidebar UI (Desktop)
+            document.querySelectorAll('.sidebar-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if(btn.dataset.target === viewName) btn.classList.add('active');
             });
@@ -627,7 +717,7 @@
             
             if (queueItems.length === 0) {
                 queueList.innerHTML = `
-                    <div class="bg-white rounded-[24px] p-8 text-center border border-slate-100 shadow-soft">
+                    <div class="bg-white rounded-[24px] p-8 text-center border border-slate-200 shadow-soft">
                         <div class="text-brand-400 mb-3"><i class="ph-fill ph-check-fat text-4xl"></i></div>
                         <p class="font-extrabold text-slate-900 text-lg">All caught up!</p>
                         <p class="text-sm text-slate-500 mt-1">Queue is clear for now.</p>
@@ -635,9 +725,9 @@
             } else {
                 queueItems.forEach(l => {
                     queueList.innerHTML += `
-                        <div class="bg-white p-4 rounded-[24px] border border-slate-100 shadow-soft flex items-center justify-between active:scale-[0.97] transition-all cursor-pointer hover:border-brand-200" onclick="openAppDetails('${l.id}')">
+                        <div class="bg-white p-4 rounded-[20px] border border-slate-200 shadow-soft flex items-center justify-between hover:scale-[1.01] transition-all cursor-pointer hover:border-brand-300" onclick="openAppDetails('${l.id}')">
                             <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 rounded-[18px] bg-slate-50 flex items-center justify-center shrink-0 border border-slate-100 shadow-sm">
+                                <div class="w-12 h-12 rounded-[16px] bg-slate-50 flex items-center justify-center shrink-0 border border-slate-100 shadow-sm">
                                     ${getIcon(l.status)}
                                 </div>
                                 <div>
@@ -655,6 +745,20 @@
                     `;
                 });
             }
+            
+            // Populate Desktop Activity Widget
+            const activityWidget = document.getElementById('dash-activity-widget');
+            if(activityWidget && notificationsData.length > 0) {
+                activityWidget.innerHTML = notificationsData.slice(0, 3).map(n => `
+                    <div class="flex gap-3 items-start">
+                        ${getNotificationIcon(n.type).replace('w-10 h-10', 'w-8 h-8').replace('text-xl', 'text-sm')}
+                        <div>
+                            <p class="text-sm font-bold text-slate-800 leading-tight">${n.title}</p>
+                            <p class="text-xs text-slate-500 mt-0.5">${n.time}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
         }
 
         function renderApplications() {
@@ -664,10 +768,9 @@
             const sortedLoans = [...loans].sort((a,b) => (a.status === 'Pending' ? -1 : 1));
 
             sortedLoans.forEach((l, index) => {
-                // Staggered animation effect
-                const animDelay = index * 50;
+                const animDelay = index * 30;
                 list.innerHTML += `
-                    <div class="bg-white p-5 rounded-[24px] border border-slate-100 shadow-soft active:scale-[0.98] transition-all cursor-pointer opacity-0 animate-fade-in" style="animation-delay: ${animDelay}ms; animation-fill-mode: forwards;" onclick="openAppDetails('${l.id}')">
+                    <div class="bg-white p-5 rounded-[24px] border border-slate-200 shadow-soft hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer opacity-0 animate-fade-in" style="animation-delay: ${animDelay}ms; animation-fill-mode: forwards;" onclick="openAppDetails('${l.id}')">
                         <div class="flex justify-between items-start mb-4">
                             <div class="flex gap-3">
                                 <div class="w-10 h-10 rounded-[14px] bg-slate-100 flex items-center justify-center shrink-0">
@@ -703,34 +806,13 @@
             const loan = loans.find(l => l.id === id);
             if(!loan) return;
 
-            // Populate static data immediately
             document.getElementById('det-name').textContent = loan.applicantName;
             document.getElementById('det-id').textContent = `Application ID: ${loan.id}`;
             document.getElementById('det-amount').textContent = formatCurFull(loan.amount);
             document.getElementById('det-purpose').textContent = loan.purpose;
             document.getElementById('det-income').textContent = formatCurFull(loan.income);
             document.getElementById('det-score').textContent = loan.creditScore;
-            
-            // Add Narrative
-            const narrativeBox = document.getElementById('det-narrative');
-            if (narrativeBox) {
-                narrativeBox.textContent = `"${loan.narrative || 'No statement of purpose provided.'}"`;
-            } else {
-                // If the element doesn't exist yet, we'll inject it into the DOM
-                const detailContainer = document.querySelector('#detail-overlay .flex-1.space-y-6');
-                const narrativeHtml = `
-                    <div class="bg-indigo-50/50 p-5 rounded-[24px] border border-indigo-100/50 relative">
-                        <div class="absolute -top-3 left-4 bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm border border-indigo-200">
-                            <i class="ph-fill ph-quotes"></i> Applicant Statement
-                        </div>
-                        <p class="text-sm text-slate-700 leading-relaxed font-medium italic mt-2" id="det-narrative">
-                            "${loan.narrative || 'No statement of purpose provided.'}"
-                        </p>
-                    </div>
-                `;
-                // Insert it right after the status badge / main header area
-                detailContainer.insertAdjacentHTML('afterbegin', narrativeHtml);
-            }
+            document.getElementById('det-narrative').textContent = `"${loan.narrative || 'No statement of purpose provided.'}"`;
             
             const statusBadge = document.getElementById('det-status-badge');
             statusBadge.textContent = loan.status;
@@ -740,23 +822,21 @@
             riskBadge.textContent = `${loan.riskLevel} Risk`;
             riskBadge.className = `px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider ${getRiskStyles(loan.riskLevel)}`;
 
-            // Reset AI UI State
             resetAIState();
             
-            // Build Action Buttons
-            const actions = document.getElementById('mobile-actions');
+            const actions = document.getElementById('modal-actions');
             if(loan.status === 'Pending' || loan.status === 'Review') {
                 actions.innerHTML = `
-                    <button onclick="changeStatus('${loan.id}', 'Rejected')" class="flex-1 py-4 bg-red-50 text-red-600 rounded-2xl font-bold text-[15px] border border-red-100 active:bg-red-100 transition-colors">
+                    <button onclick="changeStatus('${loan.id}', 'Rejected')" class="flex-1 py-4 bg-red-50 text-red-600 rounded-2xl font-bold text-[15px] border border-red-100 hover:bg-red-100 transition-colors">
                         Decline
                     </button>
-                    <button onclick="changeStatus('${loan.id}', 'Approved')" class="flex-[2] py-4 bg-dark text-white rounded-2xl font-bold text-[15px] shadow-float active:scale-[0.98] transition-transform flex justify-center items-center gap-2">
+                    <button onclick="changeStatus('${loan.id}', 'Approved')" class="flex-[2] py-4 bg-dark text-white rounded-2xl font-bold text-[15px] shadow-float hover:scale-[0.98] transition-transform flex justify-center items-center gap-2">
                         <i class="ph-bold ph-check"></i> Approve Loan
                     </button>
                 `;
             } else {
                  actions.innerHTML = `
-                    <button onclick="changeStatus('${loan.id}', 'Pending')" class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold text-[15px] active:bg-slate-200 transition-colors flex justify-center items-center gap-2 border border-slate-200">
+                    <button onclick="changeStatus('${loan.id}', 'Pending')" class="w-full py-4 bg-slate-100 text-slate-700 rounded-2xl font-bold text-[15px] hover:bg-slate-200 transition-colors flex justify-center items-center gap-2 border border-slate-200">
                         <i class="ph-bold ph-arrow-u-up-left"></i> Revert to Pending
                     </button>
                 `;
@@ -768,9 +848,10 @@
             
             backdrop.classList.remove('opacity-0', 'pointer-events-none');
             backdrop.classList.add('opacity-100');
-            modal.classList.remove('translate-y-full');
+            
+            modal.classList.remove('modal-closed-mobile', 'md:modal-closed-desktop');
+            modal.classList.add('modal-open-mobile', 'md:modal-open-desktop');
 
-            // Trigger AI Animation Sequence
             runAILogicSequence(loan);
         }
 
@@ -780,7 +861,10 @@
             
             backdrop.classList.remove('opacity-100');
             backdrop.classList.add('opacity-0', 'pointer-events-none');
-            modal.classList.add('translate-y-full');
+            
+            modal.classList.remove('modal-open-mobile', 'md:modal-open-desktop');
+            modal.classList.add('modal-closed-mobile', 'md:modal-closed-desktop');
+            
             currentOpenLoanId = null;
         }
 
@@ -788,31 +872,27 @@
             document.getElementById('ai-spinner').classList.remove('hidden');
             document.getElementById('scan-line').classList.remove('hidden');
             document.getElementById('ai-status-text').textContent = 'Analyzing Data Points...';
+            document.getElementById('ai-status-text').className = 'text-[10px] text-brand-400 font-bold uppercase tracking-wider';
+            
             document.getElementById('ai-results-grid').classList.add('hidden', 'opacity-0');
             document.getElementById('ai-progress-container').classList.remove('hidden');
+            document.getElementById('ai-results-grid').classList.remove('flex');
             
             const steps = document.querySelectorAll('.ai-step');
             steps.forEach(s => {
                 s.classList.add('opacity-50');
                 s.querySelector('.step-icon').className = 'ph-bold ph-circle-dashed step-icon animate-spin';
-                s.querySelector('.step-icon').style.color = '#64748b'; // slate-500
+                s.querySelector('.step-icon').style.color = '#64748b'; 
             });
             document.getElementById('det-ai-insight-mobile').innerHTML = '<span class="animate-pulse text-slate-400">Evaluating multi-variant risk parameters...</span>';
         }
 
         async function runAILogicSequence(loan) {
-            // Helper for delay
             const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
             
-            // Step 1
-            await wait(600);
-            updateStep(1, true);
-            
-            // Step 2
-            await wait(700);
-            updateStep(2, true);
+            await wait(400); updateStep(1, true);
+            await wait(500); updateStep(2, true);
 
-            // Calculation Logic
             const assumedDebt = (loan.income * 0.3) / 12;
             const monthlyPayment = loan.amount / 36; 
             const calcDTI = (((assumedDebt + monthlyPayment) * 12) / loan.income) * 100;
@@ -822,11 +902,8 @@
             document.getElementById('ai-dti-mobile').textContent = `${calcDTI.toFixed(1)}%`;
             document.getElementById('ai-prob-mobile').textContent = `${probDefault.toFixed(1)}%`;
             
-            // Step 3
-            await wait(600);
-            updateStep(3, true);
+            await wait(400); updateStep(3, true);
 
-            // Finalize
             await wait(300);
             document.getElementById('ai-spinner').classList.add('hidden');
             document.getElementById('scan-line').classList.add('hidden');
@@ -836,10 +913,9 @@
             document.getElementById('ai-progress-container').classList.add('hidden');
             const grid = document.getElementById('ai-results-grid');
             grid.classList.remove('hidden');
-            // small delay for transition
+            grid.classList.add('flex');
             setTimeout(() => grid.classList.remove('opacity-0'), 50);
 
-            // Narrative Generation
             let insight = "";
             if (loan.riskLevel === 'Low') {
                 insight = `Excellent candidate. DTI of <span class="text-brand-300 font-extrabold">${calcDTI.toFixed(1)}%</span> is optimal. Historical default models place this profile in the top 5% of security.`;
@@ -870,14 +946,12 @@
                 
                 showToast(`Application ${newStatus}`, newStatus === 'Approved' ? 'success' : 'info');
                 
-                // Add Notification for Status Change
                 addNotification({
                     title: `Status Changed to ${newStatus}`,
                     message: `Application ${id} for ${loans[index].applicantName} was moved from ${oldStatus}.`,
                     type: newStatus === 'Approved' ? 'success' : (newStatus === 'Rejected' ? 'alert' : 'info'),
                 });
                 
-                // Refresh views dynamically
                 renderApplications();
                 renderDashboard();
                 if(document.getElementById('view-analytics').classList.contains('active')) renderAnalytics(); 
@@ -902,7 +976,7 @@
 
             // Status Doughnut Chart
             if(activeChartInstances.status) activeChartInstances.status.destroy();
-            const ctxStatus = document.getElementById('chartStatusMobile').getContext('2d');
+            const ctxStatus = document.getElementById('chartStatus').getContext('2d');
             activeChartInstances.status = new Chart(ctxStatus, {
                 type: 'doughnut',
                 data: {
@@ -920,24 +994,23 @@
                     plugins: { 
                         legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11, weight: 'bold' }, color: '#475569' } } 
                     },
-                    cutout: '75%',
+                    cutout: '70%',
                     layout: { padding: 0 }
                 }
             });
 
             // Purpose Bar Chart
             if(activeChartInstances.purpose) activeChartInstances.purpose.destroy();
-            const ctxPurpose = document.getElementById('chartPurposeMobile').getContext('2d');
+            const ctxPurpose = document.getElementById('chartPurpose').getContext('2d');
             
-            // Generate clean gradients
-            let gradient = ctxPurpose.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, '#2dd4bf'); // brand-400
-            gradient.addColorStop(1, '#0d9488'); // brand-600
+            let gradient = ctxPurpose.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, '#2dd4bf');
+            gradient.addColorStop(1, '#0d9488');
 
             activeChartInstances.purpose = new Chart(ctxPurpose, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(purposeVolumes).map(l => l.substring(0,6)+'.'),
+                    labels: Object.keys(purposeVolumes).map(l => l.length > 8 ? l.substring(0,8)+'...' : l),
                     datasets: [{
                         label: 'Volume',
                         data: Object.values(purposeVolumes),
@@ -951,7 +1024,7 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: { display: false, beginAtZero: true },
-                        x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10, weight: 'bold' }, color: '#94a3b8' } }
+                        x: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 11, weight: 'bold' }, color: '#94a3b8' } }
                     },
                     plugins: {
                         legend: { display: false },
@@ -970,12 +1043,10 @@
             const amount = parseFloat(document.getElementById('form-amount').value);
             const purpose = document.getElementById('form-purpose').value;
 
-            // Generate a default narrative for simulated applications
             let defaultNarrative = "This is an automated simulation request generated via the officer portal to test the SwiftAI underwriting capabilities.";
             if (purpose === 'Personal') defaultNarrative = "I am requesting these funds to cover unexpected personal expenses that have arisen over the last month.";
             if (purpose === 'Auto') defaultNarrative = "My current vehicle is unreliable and I need to secure financing for a newer, safer car to commute to work.";
             
-            // Generate Mock AI Stats instantly
             const scoreBase = 580;
             const incomeBonus = Math.min((income / 100000) * 150, 150);
             const creditScore = Math.min(850, Math.floor(scoreBase + incomeBonus + (Math.random() * 50)));
@@ -1005,7 +1076,6 @@
             const isApproved = status === 'Approved';
             showToast(isApproved ? 'Auto-Approved by SwiftAI' : 'Application Injected', isApproved ? 'success' : 'info');
             
-            // Add Notification for New Application
             addNotification({
                 title: isApproved ? 'SwiftAI Auto-Approval' : 'New Application Received',
                 message: `${fname} ${lname} requested ${formatCurFull(amount)}. Status: ${status}.`,
@@ -1038,19 +1108,27 @@
             if(document.getElementById('view-notifications').classList.contains('active')) {
                 renderNotificationsList();
             }
+            if(document.getElementById('view-dashboard').classList.contains('active')) {
+                renderDashboard(); // Update activity widget
+            }
         }
 
         function updateNotificationBadge() {
             unreadNotificationsCount = notificationsData.filter(n => !n.read).length;
-            const badge = document.getElementById('notif-badge');
-            if(unreadNotificationsCount > 0) {
-                badge.classList.remove('hidden');
-                // Optional pulse effect on new notif
-                badge.classList.add('animate-ping');
-                setTimeout(() => badge.classList.remove('animate-ping'), 1000);
-            } else {
-                badge.classList.add('hidden');
-            }
+            
+            const badges = [document.getElementById('notif-badge-mobile'), document.getElementById('notif-badge-desktop')];
+            
+            badges.forEach(badge => {
+                if(badge) {
+                    if(unreadNotificationsCount > 0) {
+                        badge.classList.remove('hidden');
+                        badge.classList.add('animate-ping');
+                        setTimeout(() => badge.classList.remove('animate-ping'), 1000);
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+            });
         }
 
         function renderNotificationsList() {
@@ -1062,31 +1140,30 @@
             if (notificationsData.length === 0) {
                 list.classList.add('hidden');
                 emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
                 setTimeout(() => emptyState.classList.remove('opacity-0'), 50);
             } else {
                 list.classList.remove('hidden');
                 emptyState.classList.add('hidden', 'opacity-0');
+                emptyState.classList.remove('flex');
                 
                 notificationsData.forEach((n, index) => {
                     const animDelay = index * 30;
                     list.innerHTML += `
-                        <div class="bg-white p-4 rounded-[20px] border ${n.read ? 'border-slate-100 opacity-70' : 'border-brand-100 bg-brand-50/10'} shadow-sm flex items-start gap-4 transition-all cursor-pointer opacity-0 animate-fade-in" style="animation-delay: ${animDelay}ms; animation-fill-mode: forwards;" onclick="markNotificationRead('${n.id}')">
+                        <div class="bg-white p-4 rounded-[20px] border ${n.read ? 'border-slate-200 opacity-70' : 'border-brand-200 bg-brand-50/30'} shadow-sm flex items-start gap-4 hover:shadow-md transition-all cursor-pointer opacity-0 animate-fade-in" style="animation-delay: ${animDelay}ms; animation-fill-mode: forwards;" onclick="markNotificationRead('${n.id}')">
                             ${getNotificationIcon(n.type)}
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 pt-0.5">
                                 <div class="flex justify-between items-start mb-1">
                                     <h4 class="font-extrabold text-slate-900 text-[14px] truncate pr-2 ${n.read ? 'text-slate-600' : ''}">${n.title}</h4>
                                     <span class="text-[10px] font-bold text-slate-400 shrink-0 whitespace-nowrap">${n.time}</span>
                                 </div>
                                 <p class="text-xs font-medium text-slate-500 leading-snug">${n.message}</p>
                             </div>
-                            ${!n.read ? '<div class="w-2 h-2 rounded-full bg-brand-500 mt-2 shrink-0"></div>' : ''}
+                            ${!n.read ? '<div class="w-2.5 h-2.5 rounded-full bg-brand-500 mt-2 shrink-0 shadow-[0_0_8px_rgba(20,184,166,0.5)]"></div>' : ''}
                         </div>
                     `;
                 });
             }
-            
-            // Mark all as read when viewing the page if desired, or keep individual
-            // Here we keep individual to show interaction.
         }
 
         function markNotificationRead(id) {
@@ -1102,39 +1179,26 @@
             notificationsData = [];
             updateNotificationBadge();
             renderNotificationsList();
+            if(document.getElementById('view-dashboard').classList.contains('active')) renderDashboard();
         }
 
         function showToast(msg, type) {
-            const toast = document.getElementById('toast');
-            const toastBody = document.getElementById('toast-body');
-            const toastIcon = document.getElementById('toast-icon');
-            
-            document.getElementById('toast-msg').textContent = msg;
-            
-            if(type === 'success') {
-                toastIcon.className = "w-10 h-10 rounded-xl bg-brand-500/20 flex items-center justify-center shrink-0 text-brand-400";
-                toastIcon.innerHTML = '<i class="ph-fill ph-check-circle text-2xl"></i>';
-            } else {
-                toastIcon.className = "w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center shrink-0 text-blue-400";
-                toastIcon.innerHTML = '<i class="ph-fill ph-info text-2xl"></i>';
-            }
-
-            // Animate In/Out sequence
-            toast.classList.remove('-translate-y-[150%]', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100'); 
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('-translate-y-[150%]', 'opacity-0');
-            }, 3500);
+            // Pop-up disabled as requested
         }
 
         // Init
         window.onload = () => {
             renderDashboard();
             updateNotificationBadge();
+            
+            // Handle window resize for charts
+            window.addEventListener('resize', () => {
+                if(document.getElementById('view-analytics').classList.contains('active')) {
+                    // Small delay to let container resize first
+                    setTimeout(renderAnalytics, 100);
+                }
+            });
         };
-
     </script>
 </body>
 </html>
